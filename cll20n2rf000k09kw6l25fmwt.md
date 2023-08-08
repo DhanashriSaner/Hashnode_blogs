@@ -80,6 +80,35 @@ volumes:
   mysql-data:
 ```
 
+### Dockerfile
+
+```plaintext
+# Use an official Python runtime as the base image
+FROM python:3.9-slim
+
+# Set the working directory in the container
+WORKDIR /app
+
+# install required packages for system
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install -y gcc default-libmysqlclient-dev pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy the requirements file into the container
+COPY requirements.txt .
+
+# Install app dependencies
+RUN pip install mysqlclient
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the application code
+COPY . .
+
+# Specify the command to run your application
+CMD ["python", "app.py"]
+```
+
 ## Project
 
 ### **Step 1: Clone the Repository**
@@ -98,7 +127,7 @@ https://github.com/DhanashriSaner/two-tier-flask-app.git
 sudo apt install docker-compose -y
 ```
 
-### **Step 3: Start the Application with Docker Compose**
+### **Step 3: Start Docker Compose**
 
 ```plaintext
 docker-compose up -d
@@ -110,7 +139,7 @@ docker-compose up -d
 
 ### **Step 4: Verify Containers**
 
-To make sure everything is up and running, execute the following command:
+Check whether the container is running or not, and execute the following command:
 
 ```plaintext
 docker ps
@@ -118,7 +147,9 @@ docker ps
 
 ![](https://cdn.hashnode.com/res/hashnode/image/upload/v1691410991846/80a040f9-3ad5-422e-a577-e3df4b85e19d.png align="center")
 
-### **Step 5: Create a MySQL Data Volume**
+The container is running, now we have to create the database.
+
+### **Step 5: Create Data Volume**
 
 Now, let's create a data volume to store the MySQL data.
 
@@ -158,10 +189,10 @@ create table messages (message varchar(300));
 
 ### **Step 8: Access the Application**
 
-To check your Flask application progress, open a web browser and enter the following URL:
+You need to open port 5000 to access an application. To check your Flask application progress, type the following URL in the browser.
 
 ```plaintext
-http://PUBLIC_IP_OF_SERVER:5000
+http://<PUBLIC_IP_OF_SERVER>:5000
 ```
 
 ![](https://cdn.hashnode.com/res/hashnode/image/upload/v1691411958493/ff6ab1f9-4e55-4d87-89d6-aafdf706b702.png align="center")
